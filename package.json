@@ -1,0 +1,23 @@
+{
+  "name": "interledger-of-lasers",
+  "version": "1.0.0",
+  "description": "> 'nuff said.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sharafian/interledger-of-lasers.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sharafian/interledger-of-lasers/issues"
+  },
+  "homepage": "https://github.com/sharafian/interledger-of-lasers#readme",
+  "dependencies": {
+    "ilp": "^11.3.1",
+    "serialport": "^5.0.0"
+  }
+}
