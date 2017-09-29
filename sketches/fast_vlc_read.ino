@@ -1,6 +1,5 @@
 #define MAX_PULSE 65000
-#define RESOLUTION 13
-#define THRESHOLD 200
+#define THRESHOLD 10
 
 int numSamples = 0;
 volatile byte reading;
@@ -17,8 +16,8 @@ void setup () {
 
   // sampling rate is [ADC clock] / [prescaler] / [conversion clock cycles]
   // for Arduino Uno ADC clock is 16 MHz and a conversion takes 13 clock cycles
-  //ADCSRA |= (1 << ADPS2) | (1 << ADPS0);    // 32 prescaler for 38.5 KHz
-  ADCSRA |= (1 << ADPS2);                     // 16 prescaler for 76.9 KHz
+  ADCSRA |= (1 << ADPS2) | (1 << ADPS0);    // 32 prescaler for 38.5 KHz
+  //ADCSRA |= (1 << ADPS2);                     // 16 prescaler for 76.9 KHz
   //ADCSRA |= (1 << ADPS1) | (1 << ADPS0);    // 8 prescaler for 153.8 KHz
 
   ADCSRA |= (1 << ADATE); // enable auto trigger
@@ -37,11 +36,11 @@ volatile bool printSomething = false;
 ISR (ADC_vect) {
   reading = ADCH;
 
+  /*
   Serial.print("0 ");
   Serial.print(reading, DEC);
-  Serial.print(" 300\n");
+  Serial.print(" 100\n");*/
   
-  /*
   if (countingHigh && reading > THRESHOLD) {
      highPulse ++;
 
@@ -60,16 +59,24 @@ ISR (ADC_vect) {
   } else if (countingHigh) {
     countingHigh = false;
   } else {
+    /*Serial.print(highPulse, DEC);
+    Serial.print(" ");
+    Serial.print(lowPulse, DEC);
+    Serial.print("\n");*/
+    
     countingHigh = true;
-    if (lowPulse * RESOLUTION > 2300) {
+    if (highPulse > 70) {
       mask = 128;
       currentChar = 0;
-    } else if (lowPulse * RESOLUTION < 1000 && highPulse * RESOLUTION < 1000) {
+    } else if (lowPulse < 30 && highPulse < 30) {
       mask /= 2;
-    } else if (lowPulse * RESOLUTION < 1000 && highPulse * RESOLUTION > 1000) {
+    } else if (lowPulse < 30 && highPulse > 30) {
       currentChar += mask;
       mask /= 2;
     }
+
+    lowPulse = 0;
+    highPulse = 0;
   }
 
   if (!mask) {
@@ -80,7 +87,6 @@ ISR (ADC_vect) {
   }
   
   numSamples ++;
-    */
 }
 
 void loop () {
