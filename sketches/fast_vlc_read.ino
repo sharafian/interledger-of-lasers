@@ -65,12 +65,12 @@ ISR (ADC_vect) {
     Serial.print("\n");*/
     
     countingHigh = true;
-    if (highPulse > 70) {
+    if (highPulse > 35) {
       mask = 128;
       currentChar = 0;
-    } else if (lowPulse < 30 && highPulse < 30) {
+    } else if (lowPulse < 15 && highPulse < 15) {
       mask /= 2;
-    } else if (lowPulse < 30 && highPulse > 30) {
+    } else if (lowPulse < 15 && highPulse > 15) {
       currentChar += mask;
       mask /= 2;
     }

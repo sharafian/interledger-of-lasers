@@ -1,9 +1,9 @@
 #include <IRremote.h>
 
-#define SONY_HDR_MARK             24000
-#define SONY_HDR_SPACE             6000
-#define SONY_ONE_MARK             12000
-#define SONY_ZERO_MARK             6000
+#define SONY_HDR_MARK             1200
+#define SONY_HDR_SPACE             300
+#define SONY_ONE_MARK              600
+#define SONY_ZERO_MARK             300
 #define KHZ                          1
 
 IRsend irsend;
