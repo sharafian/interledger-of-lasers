@@ -4,7 +4,7 @@
 #define SONY_HDR_SPACE             300
 #define SONY_ONE_MARK              600
 #define SONY_ZERO_MARK             300
-#define KHZ                          1
+#define KHZ                         38
 
 IRsend irsend;
 
@@ -12,6 +12,7 @@ void setup()
 {
   Serial.begin(9600);
   pinMode(13, OUTPUT);
+  pinMode(8, INPUT);
 }
 
 uint8_t currentBit;
@@ -39,16 +40,18 @@ void transmitString (const char* str) {
   irsend.space(0);
 }
 
+const char* message = "btp+wss://:verysecretsecret@localhost:3000/";
+//const char * message = "MDAxY2xvY2F0aW9uIGh0dHA6Ly9teWJhbmsvCjAwMjZpZGVudGlmaWVyIHdlIHVzZWQgb3VyIHNlY3JldCBrZXkKMDAxZGNpZCBhY2NvdW50ID0gMzczNTkyODU1OQowMDIwY2lkIHRpbWUgPCAyMDIwLTAxLTAxVDAwOjAwCjAwMjJjaWQgZW1haWwgPSBhbGljZUBleGFtcGxlLm9yZwowMDJmc2lnbmF0dXJlID8f19FL+bkC9p/aoMmIecC7GxdOcLVyUnrv6lJMM7NSCg==";
+int state;
+
 void loop() {
-  const char* message = "btp+wss://:verysecretsecret@red.example.com/api/rpc";
-
-  Serial.print("sending message\n");
-  transmitString(message);
-
-  digitalWrite(13, HIGH);
-  delay(500);
-  digitalWrite(13, LOW);
-
-  delay(5000);
+  state = digitalRead(8);
+  digitalWrite(13, state);
+  if (state == HIGH) {
+    Serial.print("sending message");
+    transmitString(message);
+    delay(500);
+   }
+  delay(50);
 }
 

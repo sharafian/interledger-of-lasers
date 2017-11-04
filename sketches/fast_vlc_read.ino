@@ -7,6 +7,8 @@ long t, t0;
 
 void setup () {
   Serial.begin(115200);
+  pinMode(7, OUTPUT);
+  pinMode(13, OUTPUT);
 
   ADCSRA = 0;             // clear ADCSRA register
   ADCSRB = 0;             // clear ADCSRB register
@@ -32,6 +34,13 @@ volatile uint16_t lowPulse = 0;
 volatile byte mask = 128;
 volatile byte currentChar;
 volatile bool printSomething = false;
+volatile long stopAt = 0;
+
+void resetSerial () {
+  Serial.print("\n");
+  digitalWrite(13, LOW);
+  stopAt = micros() + 5000000;
+}
 
 ISR (ADC_vect) {
   reading = ADCH;
@@ -39,22 +48,31 @@ ISR (ADC_vect) {
   /*
   Serial.print("0 ");
   Serial.print(reading, DEC);
-  Serial.print(" 100\n");*/
+  Serial.print(" 300\n");
+  return;
+  */
   
   if (countingHigh && reading > THRESHOLD) {
-     highPulse ++;
+    highPulse ++;
 
-     if (highPulse >= MAX_PULSE) {
-       if (printSomething) Serial.print("\n");
-       printSomething = false;
-       return;
-     }
+    if (highPulse >= MAX_PULSE) {
+      if (printSomething) resetSerial();
+      printSomething = false;
+      lowPulse = 0;
+      highPulse = 0;
+      countingHigh = true;
+      return;
+    }
   } else if (!countingHigh && reading < THRESHOLD) {
     lowPulse ++;
 
     if (lowPulse >= MAX_PULSE) {
-      if (printSomething) Serial.print("\n");
+      if (printSomething) resetSerial();
       printSomething = false;
+      lowPulse = 0;
+      highPulse = 0;
+      countingHigh = true;
+      return;
     }
   } else if (countingHigh) {
     countingHigh = false;
@@ -81,6 +99,7 @@ ISR (ADC_vect) {
 
   if (!mask) {
     printSomething = true;
+    digitalWrite(13, HIGH);
     Serial.print((char)currentChar);
     currentChar = 0;
     mask = 128;
@@ -102,5 +121,15 @@ void loop () {
     t0 = micros();
     numSamples = 0;
   } */
-  delay(100);
+  /*digitalWrite(7, HIGH);
+  delay(5000);
+  digitalWrite(7, LOW);
+  delay(5000);*/
+  long curTime = micros();
+  if (curTime > stopAt) {
+    digitalWrite(7, LOW);
+  } else {
+    digitalWrite(7, HIGH);
+  }
+  delay(50);
 }
