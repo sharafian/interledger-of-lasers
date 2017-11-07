@@ -39,7 +39,7 @@ volatile long stopAt = 0;
 void resetSerial () {
   Serial.print("\n");
   digitalWrite(13, LOW);
-  stopAt = micros() + 5000000;
+  // stopAt = micros() + 5000000;
 }
 
 ISR (ADC_vect) {
@@ -125,7 +125,13 @@ void loop () {
   delay(5000);
   digitalWrite(7, LOW);
   delay(5000);*/
+
   long curTime = micros();
+  if (Serial.available() > 0) {
+    Serial.read();
+    stopAt = curTime + 5000000;
+  }
+  
   if (curTime > stopAt) {
     digitalWrite(7, LOW);
   } else {

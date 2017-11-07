@@ -40,7 +40,7 @@ void transmitString (const char* str) {
   irsend.space(0);
 }
 
-const char* message = "btp+wss://:verysecretsecret@localhost:3000/";
+const char* message = "btp+ws://:verysecretsecret@localhost:3000/";
 //const char * message = "MDAxY2xvY2F0aW9uIGh0dHA6Ly9teWJhbmsvCjAwMjZpZGVudGlmaWVyIHdlIHVzZWQgb3VyIHNlY3JldCBrZXkKMDAxZGNpZCBhY2NvdW50ID0gMzczNTkyODU1OQowMDIwY2lkIHRpbWUgPCAyMDIwLTAxLTAxVDAwOjAwCjAwMjJjaWQgZW1haWwgPSBhbGljZUBleGFtcGxlLm9yZwowMDJmc2lnbmF0dXJlID8f19FL+bkC9p/aoMmIecC7GxdOcLVyUnrv6lJMM7NSCg==";
 int state;
 

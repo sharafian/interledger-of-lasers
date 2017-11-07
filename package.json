@@ -18,6 +18,7 @@
   "homepage": "https://github.com/sharafian/interledger-of-lasers#readme",
   "dependencies": {
     "ilp": "^11.3.1",
+    "ilp-plugin-payment-channel-framework": "^1.1.4",
     "serialport": "^5.0.0"
   }
 }
