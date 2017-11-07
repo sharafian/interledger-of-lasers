@@ -1,0 +1,17 @@
+FROM interledgerjs/ilp-kit:v3.0.0-alpha4
+
+WORKDIR /usr/src/app
+RUN apt-get update && apt-get install -y git netcat
+RUN npm install ilp-plugin-mini-accounts
+
+# may god have mercy on my soul
+RUN sed -i "s/('https:/('http:/" node_modules/ilp/src/lib/spsp.js
+RUN sed -i 's/tls_only: true/tls_only: false/' api/src/lib/utils.js
+RUN sed -i "s/throw new NotFoundError('Unknown account')/console.error(e);throw new NotFoundError('Unknown account')/" api/src/lib/utils.js
+RUN sed -i "s/5000/30000/" node_modules/ilp/src/lib/ilqp.js
+RUN sed -i "s/10/1000/" node_modules/ilp/src/lib/ilqp.js
+RUN sed -i "s/sourceExpiryDuration: bestQuote.source_expiry_duration ||/sourceExpiryDuration:/" node_modules/ilp/src/lib/ilqp.js
+# RUN sed -i "s/10000/30000/" node_modules/ilp-core/src/lib/client.js
+# RUN sed -i "s/currencySymbolMap\\[ledgerInfo.currency_code\\]/currencySymbolMap[ledgerInfo.currency_code] || ledgerInfo.currency_code/" api/src/lib/utils.js
+
+CMD [ "npm", "start" ]

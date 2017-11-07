@@ -33,14 +33,13 @@ port.on('data', data => {
 
 async function trySendingPayment (server) {
   console.log('creating plugin for "%s"', server)
-  /*
   const plugin = new PluginBtp({ server, insecure: true })
   await plugin.connect()  
   console.log('connected plugin')
 
   const payment = await ILP.SPSP.quote(plugin, {
-    receiver: 'ben@localhost:3001',
-    destinationAmount: '1000'
+    receiver: 'http://localhost:2010/api/spsp/merchant',
+    destinationAmount: '0.001'
   })
 
   console.log('quoted payment:', payment)
@@ -48,5 +47,4 @@ async function trySendingPayment (server) {
 
   await ILP.SPSP.sendPayment(plugin, payment)
   console.log('receiver claimed funds!')
-  */
 }

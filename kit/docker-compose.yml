@@ -1,0 +1,69 @@
+version: "2.1"
+networks:
+  kit:
+services:
+
+  postgres:
+    container_name: "postgres"
+    build:
+      context: "."
+      dockerfile: "PostgresDockerfile"
+    volumes:
+      - "./data/postgres-data:/var/lib/postgresql/data"
+    environment:
+      PGDATA: "/var/lib/postgresql/data"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "password"
+    networks:
+      kit:
+        aliases:
+          - "postgres"
+
+  ilp-kit:
+    container_name: "ilp-kit0"
+    build:
+      context: "."
+      dockerfile: "IlpKitDockerfile"
+    command: >
+      /bin/bash -c "
+        while ! nc -z postgres 5432; do sleep 5; done;
+        npm start
+      "
+    volumes:
+      - "./data/uploads:/usr/src/app/uploads"
+    networks:
+      kit:
+        aliases:
+          - "ilp-kit0"
+    ports:
+      - "2010:2010"
+      - "3000:3000"
+    environment:
+      DB_URI: "postgres://admin:password@postgres/ilp-kit0"
+      API_HOSTNAME: "ilp-kit0"
+      API_PORT: "2100"
+      API_PRIVATE_HOSTNAME: "ilp-kit0"
+      API_PUBLIC_HTTPS: "false"
+      API_PUBLIC_PATH: "/api"
+      API_PUBLIC_PORT: "2010"
+      API_SECRET: "password"
+      CLIENT_HOST: "ilp-kit"
+      CLIENT_PORT: "2010"
+      CLIENT_PUBLIC_PORT: "2010"
+      CLIENT_TITLE: "ILP Kit 0"
+      LEDGER_ADMIN_NAME: "admin"
+      LEDGER_ADMIN_PASS: "password"
+      LEDGER_CURRENCY_CODE: "USD"
+      LEDGER_ILP_PREFIX: "test.dev.kit0."
+      LEDGER_RECOMMENDED_CONNECTORS: "connector"
+      CONNECTOR_ENABLE: "true"
+      CONNECTOR_LEDGERS: '{"test.lasernet.":{"currency":"USD","plugin":"ilp-plugin-mini-accounts","options":{"port":3000,"prefix":"test.lasernet.","debugInfiniteBalances":true}},"test.dev.kit0.":{"currency":"USD","options":{"account":"http://ilp-kit0:2010/ledger/accounts/connector","password":"password","username":"connector"},"plugin":"ilp-plugin-bells"}}'
+      CONNECTOR_ROUTE_BROADCAST_ENABLED: "true"
+      CONNECTOR_FX_SPREAD: "0"
+      CONNECTOR_BACKEND: "one-to-one"
+      CONNECTOR_MAX_HOLD_TIME: "2000"
+      API_REGISTRATION: "true"
+      LEDGER_AMOUNT_SCALE: "9"
+      LEDGER_AMOUNT_PRECISION: "19"
+      ILP_KIT_CLI_VERSION: "11.0.1"
+      DEBUG: "connector*,ilp*"
